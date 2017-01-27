@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css">
+  <title>Reddit Feed Machine</title>
+  <style>
+    .reddit-feed__item {
+      background-color: #cee3f8;
+      border: 1px solid #5f99cf;
+      padding: 15px;
+      margin-top: 10px;
+      width: auto;
+    }
+    .reddit-feed__img {
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="reddit-feed">
+      <h2 class="reddit-feed__name">
+        <a href="http://reddit.com/r/<%= SUBREDDIT_NAME %>"> reddit.com/r/<%= SUBREDDIT_NAME %></a>
+        <img src="public/spinner.gif" style="width; 32px; height: 32px;"/>
+      </h2>
+      <div class="reddit-feed__items"><div>
+    </div>
+  </div>
+   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://js.pusher.com/platform/latest/pusher-platform.js"></script>
+  <script type="text/template" id="feed-item-template">
+    <figure class="figure reddit-feed__item">
+      <img src="{0}" class="figure-img img-fluid reddit-feed__img">
+      <figcaption class="figure-caption">
+        <h4>
+          <a href="{0}">{1}</a>
+        </h4>
+      </figcaption>
+    </figure>
+  </script>
+  <script>
+    String.prototype.format = function() {
+      var args = arguments;
+      return this.replace(/{(\d+)}/g, function(match, number) { 
+        return typeof args[number] != "undefined" ? args[number] : match
+        ;
+      })
+    }
+
+     const app = new PusherPlatform.App({
+       appId: "<%= FEEDS_APP_ID %>"
+     })
+     const feed = app.feed("<%= FEED_NAME %>")
+     feed.subscribe({
+       lastEventId: "0",
+       onOpen: () => console.log("Connection established 🎉"),
+       onItem: item => {
+         var template = $("#feed-item-template")
+          .html()
+          .format(item.body.url, item.body.title)
+         $(".reddit-feed__items").prepend(template)
+       },
+       onError: error => console.error("error", error) 
+     })
+  </script>
+</body>
+</html>

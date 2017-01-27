@@ -28,7 +28,7 @@ function append (items) {
 
 function fetch (previousPosts = []) {
   reddit
-    .getNew("all")
+    .getNew(process.env.SUBREDDIT_NAME)
     .then(posts => {
       const newPosts = _
         .differenceBy(posts, previousPosts, post => post.id)
@@ -41,10 +41,10 @@ function fetch (previousPosts = []) {
         })
       console.log(chalk.green(`Found ${newPosts.length} new posts.`))
       return append(newPosts)
-        .then(() => Promise.delay(5000, [...previousPosts, ...newPosts]))
+        .then(() => Promise.delay(1000, [...previousPosts, ...newPosts]))
         .then(posts => fetch(posts))
     })
-    .catch(err => console.error(chalk.red(err)))
+    .catch(err => console.log(chalk.red(err)))
 }
 console.log("Running. Press ^-C to quit.")
 fetch()
