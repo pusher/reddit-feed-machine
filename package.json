@@ -16,7 +16,7 @@
     "snoowrap": "^1.12.0"
   },
   "scripts": {
-    "append": "node ./bin/appender",
+    "append": "node ./bin/appender-demo",
     "serve": "node ./server.js"
   }
 }

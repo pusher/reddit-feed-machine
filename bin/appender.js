@@ -15,10 +15,10 @@ const reddit = new Snoowrap({
   password: process.env.REDDIT_PASSWORD 
 })
 
-function append (items) {
+function append (items, feedName) {
   return pify(request)({ 
     method: "POST",
-    url: `https://api.private-beta-1.pusherplatform.com:443/apps/${process.env.FEEDS_APP_ID}/feeds/${process.env.FEED_NAME}`,
+    url: `https://api.private-beta-1.pusherplatform.com:443/apps/${process.env.FEEDS_APP_ID}/feeds/${feedName}`,
     body: { 
       items
     },
@@ -40,7 +40,7 @@ function fetch (previousPosts = []) {
           }
         })
       console.log(chalk.green(`Found ${newPosts.length} new posts.`))
-      return append(newPosts)
+      return append(newPosts, process.env.FEED_NAME)
         .then(() => Promise.delay(1000, [...previousPosts, ...newPosts]))
         .then(posts => fetch(posts))
     })

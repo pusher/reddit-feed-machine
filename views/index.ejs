@@ -50,6 +50,12 @@
         ;
       })
     }
+    function prependToList(post) {
+      var template = $("#feed-item-template")
+        .html()
+        .format(post.body.url, post.body.title)
+      $(".reddit-feed__items").prepend(template)
+    }
 
      const app = new PusherPlatform.App({
        appId: "<%= FEEDS_APP_ID %>"
@@ -58,12 +64,7 @@
      feed.subscribe({
        lastEventId: "0",
        onOpen: () => console.log("Connection established 🎉"),
-       onItem: item => {
-         var template = $("#feed-item-template")
-          .html()
-          .format(item.body.url, item.body.title)
-         $(".reddit-feed__items").prepend(template)
-       },
+       onItem: item => prependToList(item),
        onError: error => console.error("error", error) 
      })
   </script>
